@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>牛客社区首页</title>
+</head>
+<body>
+<h1>社区帖子列表</h1>
+<ul>
+    <!-- 使用 Thymeleaf 循环遍历 list -->
+    <li th:each="post : ${discussPosts}">
+        <b th:text="${post.title}">标题</b><br>
+        <span th:text="${post.content}">内容</span>
+        <hr>
+    </li>
+    <!-- 分页组件 -->
+    <div th:if="${page.rows > 0}">
+        <hr>
+        <nav>
+            <!-- 首页与上一页 -->
+            <a th:href="@{${page.path}(current=1)}">首页</a>
+            <a th:href="@{${page.path}(current=${page.current - 1})}" th:if="${page.current > 1}">上一页</a>
+
+            <!-- 页码数字循环 -->
+            <!-- th:each="i : ${#numbers.sequence(page.from, page.to)}" 这是一个生成数字序列的工具 -->
+            <span th:each="i : ${#numbers.sequence(page.from, page.to)}">
+            <a th:href="@{${page.path}(current=${i})}" th:text="${i}"
+               th:style="${i == page.current ? 'font-weight:bold;color:red;' : ''}">1</a>
+        </span>
+
+            <!-- 下一页与末页 -->
+            <a th:href="@{${page.path}(current=${page.current + 1})}" th:if="${page.current < page.total}">下一页</a>
+            <a th:href="@{${page.path}(current=${page.total})}">末页</a>
+        </nav>
+        <p>共 <span th:text="${page.total}">1</span> 页，
+            <span th:text="${page.rows}">10</span> 条帖子</p>
+    </div>
+</ul>
+</body>
+</html>

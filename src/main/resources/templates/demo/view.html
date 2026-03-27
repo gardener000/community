@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"> <!-- 注意这行引入了thymeleaf命名空间 -->
+<head>
+    <meta charset="UTF-8">
+    <title>我的第一个网页</title>
+</head>
+<body>
+<h1>你好，社区开发者！</h1>
+<!-- 这个 p 标签里的内容会被 Java 传过来的数据替换掉 -->
+<p>当前时间是：<span th:text="${now}">2024-01-01</span></p>
+</body>
+</html>

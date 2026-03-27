@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.DiscussPostMapper">
+
+    <select id="selectDiscussPosts" resultType="com.example.demo.entity.DiscussPost">
+        select id, user_id, title, content, create_time
+        from discuss_post
+        order by create_time desc
+        limit #{offset}, #{limit}
+    </select>
+    <select id="selectDiscussPostRows" resultType="int">
+        select count(id) from discuss_post
+    </select>
+</mapper>
