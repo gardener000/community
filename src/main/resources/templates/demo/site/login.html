@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录 - 牛客社区</title>
+    <!-- 简单内联样式，为了美观一点点 -->
+    <style>
+        .error-msg { color: red; font-size: 14px; margin-left: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: inline-block; width: 80px; }
+    </style>
+</head>
+<body>
+<div style="margin: 50px auto; width: 400px; padding: 20px; border: 1px solid #ccc;">
+    <h2>登录账号</h2>
+    <form method="post" th:action="@{/login}">
+        <!-- 账号 -->
+        <div class="form-group">
+            <label>账号：</label>
+            <input type="text" name="username" th:value="${param.username}" placeholder="请输入您的账号" required>
+            <span class="error-msg" th:text="${usernameMsg}"></span>
+        </div>
+
+        <!-- 密码 -->
+        <div class="form-group">
+            <label>密码：</label>
+            <input type="password" name="password" placeholder="请输入您的密码" required>
+            <span class="error-msg" th:text="${passwordMsg}"></span>
+        </div>
+
+        <!-- 验证码 -->
+        <div class="form-group">
+            <label>验证码：</label>
+            <input type="text" name="code" style="width: 80px;" placeholder="验证码" required>
+            <img th:src="@{/kaptcha}" id="kaptcha" style="width:100px;height:40px;vertical-align: middle; cursor: pointer;" title="点击刷新">
+            <a href="javascript:refresh_kaptcha();" style="font-size: 12px;">刷新验证码</a>
+            <span class="error-msg" th:text="${codeMsg}"></span>
+        </div>
+
+        <!-- 记住我 -->
+        <div class="form-group">
+            <input type="checkbox" name="rememberme" id="remember-me" th:checked="${param.rememberme}">
+            <label for="remember-me" style="width: auto;">记住我</label>
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="form-group">
+            <button type="submit" style="width: 100%; height: 35px; background-color: #007bff; color: white; border: none; cursor: pointer;">立即登录</button>
+        </div>
+
+        <div style="text-align: right;">
+            <a th:href="@{/register}" style="font-size: 12px;">还没有账号？立即注册</a>
+        </div>
+    </form>
+</div>
+
+<!-- 刷新验证码的脚本 -->
+<script>
+    function refresh_kaptcha() {
+        var path = "[[@{/kaptcha}]]" + "?p=" + Math.random();
+        document.getElementById("kaptcha").src = path;
+    }
+</script>
+</body>
+</html>

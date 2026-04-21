@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>操作结果</title>
+</head>
+<body>
+<div>
+    <h3 th:text="${msg}">操作成功！</h3>
+    <p>页面将在 <b id="seconds" style="color:red;">8</b> 秒后自动跳转...</p>
+</div>
+
+<script>
+    var s = 8;
+    setInterval(function(){
+        s--;
+        document.getElementById("seconds").innerText = s;
+        if(s <= 0) {
+            location.href = "[[${target}]]";
+        }
+    }, 1000);
+</script>
+</body>
+</html>

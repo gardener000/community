@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>账号设置</title>
+</head>
+<body>
+<h2>账号设置</h2>
+
+<!-- 上传头像表单 -->
+<!-- 注意：上传文件必须用 POST，且必须加 enctype="multipart/form-data" -->
+<form method="post" enctype="multipart/form-data" th:action="@{/user/upload}">
+    <div>
+        选择新头像：<input type="file" name="headerImage" accept="image/*" required>
+    </div>
+    <div style="margin-top:10px;">
+        <button type="submit">立即上传</button>
+    </div>
+    <p style="color:red;" th:text="${error}">错误提示</p>
+</form>
+</body>
+</html>

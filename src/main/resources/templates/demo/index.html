@@ -3,16 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>牛客社区首页</title>
+    <style>
+        .navbar { background-color: #343a40; padding: 10px 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; margin-left: 15px; }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; vertical-align: middle; margin-right: 5px; border: 1px solid #fff; }
+    </style>
 </head>
 <body>
-<h1>社区帖子列表</h1>
-<ul>
-    <!-- 使用 Thymeleaf 循环遍历 list -->
-    <li th:each="post : ${discussPosts}">
-        <b th:text="${post.title}">标题</b><br>
-        <span th:text="${post.content}">内容</span>
-        <hr>
-    </li>
+
+<!-- 新增：顶部导航栏 -->
+<div class="navbar">
+    <div class="logo"><b>牛客社区</b></div>
+    <div class="nav-links">
+        <a th:href="@{/index}">首页</a>
+
+        <!-- 1. 未登录状态显示 -->
+        <span th:if="${loginUser == null}">
+                <a th:href="@{/register}">注册</a>
+                <a th:href="@{/login}">登录</a>
+            </span>
+
+        <!-- 2. 已登录状态显示 -->
+        <span th:if="${loginUser != null}">
+                <a href="#">消息 <span style="background-color: red; padding: 2px 5px; border-radius: 50%; font-size: 10px;">12</span></a>
+                <a th:href="@{/user/setting}"> <!-- 下一节我们要做的账号设置 -->
+                    <img th:src="${loginUser.headerUrl}" class="user-avatar">
+                    <span th:text="${loginUser.username}">用户名</span>
+                </a>
+                <a th:href="@{/logout}">退出登录</a>
+            </span>
+    </div>
+</div>
+
+<!-- 原有的帖子列表内容 -->
+<div style="padding: 20px;">
+    <h1>社区帖子列表</h1>
+    <ul>
+        <li th:each="post : ${discussPosts}">
+            <b th:text="${post.title}">标题</b><br>
+            <span th:text="${post.content}">内容</span>
+            <hr>
+        </li>
     <!-- 分页组件 -->
     <div th:if="${page.rows > 0}">
         <hr>
@@ -36,5 +67,6 @@
             <span th:text="${page.rows}">10</span> 条帖子</p>
     </div>
 </ul>
+</div>>
 </body>
 </html>

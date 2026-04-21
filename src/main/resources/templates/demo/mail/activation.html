@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>激活账号</title>
+</head>
+<body>
+<div>
+    <p>您好，您正在注册牛客网社区账号！</p>
+    <p>
+        您的注册邮箱为：<b th:text="${email}">XXX</b>，请点击下方的链接激活您的账号：<br>
+        <a th:href="${url}">点击激活账号</a>
+    </p>
+    <p>如果此邮件不是您本人操作，请忽略。</p>
+</div>
+</body>
+</html>

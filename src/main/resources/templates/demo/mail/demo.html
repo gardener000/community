@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>激活账号</title>
+</head>
+<body>
+<div style="padding: 20px; background-color: #f4f4f4;">
+    <p>您好，<b th:text="${username}">XXX</b>!</p>
+    <p>欢迎注册牛客网，这是一封来自系统的激活邮件。</p>
+    <p>请点击下方的链接激活您的账号：</p>
+    <!-- 这里的 href 会被 Java 传过来的路径替换 -->
+    <a th:href="${url}" style="color: #007bff; text-decoration: none;">点击此处激活账号</a>
+    <hr>
+    <p style="font-size: 12px; color: #999;">如果不是本人操作，请忽略此邮件。</p>
+</div>
+</body>
+</html>
