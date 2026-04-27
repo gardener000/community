@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>帖子详情 - 牛客社区</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <style>
+        .user-header {
+           width: 50px;
+           height: 50px;
+           border-radius: 50%;
+           vertical-align: middle;
+           object-fit: cover;
+           border: 1px solid #eee;
+           margin-right: 10px;
+       }
+
+       /* 顺便给评论区也加点样式 */
+       .comment-item {
+           border-bottom: 1px solid #eee;
+           padding: 15px 0;
+       }
+    </style>
+</head>
+<body>
+<!-- 引入导航栏 -->
+<div th:replace="demo/index::navbar"></div>
+
+<div style="padding: 20px; width: 800px; margin: auto;">
+    <!-- 1. 帖子正文部分 -->
+    <h2 th:text="${post.title}">帖子标题</h2>
+    <div style="color: #666; font-size: 14px;">
+        <img th:src="${user.headerUrl}" class="user-header">
+        发布人：<b th:text="${user.username}">sunday</b>
+        | 发布于：<span th:text="${#dates.format(post.createTime, 'yyyy-MM-dd HH:mm:ss')}">时间</span>
+    </div>
+    <hr>
+    <div th:utext="${post.content}" style="line-height: 1.8;">帖子内容</div>
+
+    <!-- 2. 评论列表部分 (PPT 第 15 页核心) -->
+    <div style="margin-top: 50px;">
+        <h4><span th:text="${post.commentCount}">3</span> 条回帖</h4>
+        <hr>
+
+        <!-- 第一层循环：遍历主评论 -->
+        <div class="comment-item" th:each="cvo : ${comments}">
+            <div th:if="${cvo.user != null}">
+                <img th:src="${cvo.user.headerUrl}" class="user-header">
+                <b th:text="${cvo.user.username}">评论人姓名</b>
+                <span style="float: right; color: #999;" th:text="${#dates.format(cvo.comment.createTime, 'yyyy-MM-dd HH:mm:ss')}">时间</span>
+            </div>
+            <div style="padding: 10px 0 0 40px;" th:text="${cvo.comment.content}">评论内容</div>
+
+            <div style="margin-left: 40px; margin-top: 5px; font-size: 12px; color: #007bff;">
+                赞(0) | 回复(<span th:text="${cvo.replyCount}">2</span>)
+            </div>
+
+            <!-- 第二层循环：遍历回复（也就是评论底下的套娃） -->
+            <div class="reply-box" th:if="${cvo.replyCount > 0}">
+                <div class="reply-item" th:each="rvo : ${cvo.replies}">
+                    <div>
+                            <span th:if="${rvo.target == null}">
+                                <b th:text="${rvo.user.username}">回复人</b>:
+                            </span>
+                        <span th:if="${rvo.target != null}">
+                                <b th:text="${rvo.user.username}">回复人</b>
+                                回复 <b th:text="${rvo.target.username}" style="color:red">被回复人</b>:
+                            </span>
+                        <span th:text="${rvo.reply.content}">回复内容</span>
+                    </div>
+                    <div style="color: #999; font-size: 11px; margin-top: 5px;">
+                        <span th:text="${#dates.format(rvo.reply.createTime, 'yyyy-MM-dd HH:mm:ss')}">时间</span>
+                        <a href="#" style="margin-left: 10px;">回复</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 发表评论表单 (为下一节做准备) -->
+    <div style="margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px;">
+        <form method="post" th:action="@{|/comment/add/${post.id}|}">
+            <textarea name="content" placeholder="在这里畅所欲言你的看法吧!" style="width: 100%; height: 100px;"></textarea>
+            <div style="text-align: right; margin-top: 10px;">
+                <button type="submit">回 帖</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>牛客社区首页</title>
-    <style>
-        .navbar { background-color: #343a40; padding: 10px 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
-        .navbar a { color: white; text-decoration: none; margin-left: 15px; }
-        .user-avatar { width: 30px; height: 30px; border-radius: 50%; vertical-align: middle; margin-right: 5px; border: 1px solid #fff; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
 </head>
 <body>
 
 <!-- 新增：顶部导航栏 -->
-<div class="navbar">
+<div class="navbar" th:fragment="navbar">
     <div class="logo"><b>牛客社区</b></div>
     <div class="nav-links">
         <a th:href="@{/index}">首页</a>
@@ -25,7 +21,9 @@
 
         <!-- 2. 已登录状态显示 -->
         <span th:if="${loginUser != null}">
-                <a href="#">消息 <span style="background-color: red; padding: 2px 5px; border-radius: 50%; font-size: 10px;">12</span></a>
+                <a th:href="@{/letter/list}">
+                    消息 <span class="badge" th:if="${allUnreadCount > 0}" th:text="${allUnreadCount}" style="background-color:red; color:white; padding:2px 5px; border-radius:50%;">12</span>
+                </a>
                 <a th:href="@{/user/setting}"> <!-- 下一节我们要做的账号设置 -->
                     <img th:src="${loginUser.headerUrl}" class="user-avatar">
                     <span th:text="${loginUser.username}">用户名</span>
@@ -34,20 +32,31 @@
             </span>
     </div>
 </div>
-
+<div style="margin: 20px; border: 1px solid #ddd; padding: 15px;">
+    <h3>发布新帖子</h3>
+    <div>
+        标题：<input type="text" id="recipient-name" style="width: 300px;"><br><br>
+        内容：<textarea id="message-text" style="width: 300px; height: 100px;"></textarea><br><br>
+        <button type="button" onclick="publish()">发布帖子</button>
+    </div>
+</div>
 <!-- 原有的帖子列表内容 -->
 <div style="padding: 20px;">
     <h1>社区帖子列表</h1>
     <ul>
         <li th:each="post : ${discussPosts}">
-            <b th:text="${post.title}">标题</b><br>
+            <!-- 修改点：点击标题跳转到详情页 -->
+            <a th:href="@{|/discuss/detail/${post.id}|}">
+                <b th:text="${post.title}" style="color: blue;">标题</b>
+            </a>
+            <br>
             <span th:text="${post.content}">内容</span>
             <hr>
         </li>
     <!-- 分页组件 -->
     <div th:if="${page.rows > 0}">
         <hr>
-        <nav>
+        <nav th:fragment="pagination">
             <!-- 首页与上一页 -->
             <a th:href="@{${page.path}(current=1)}">首页</a>
             <a th:href="@{${page.path}(current=${page.current - 1})}" th:if="${page.current > 1}">上一页</a>
@@ -66,7 +75,37 @@
         <p>共 <span th:text="${page.total}">1</span> 页，
             <span th:text="${page.rows}">10</span> 条帖子</p>
     </div>
+
 </ul>
 </div>>
-</body>
+<!-- 1. 首先引入 jQuery (这是 AJAX 运行的基础) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- 2. 编写你的发布逻辑 -->
+<script>
+    function publish() {
+        var title = $("#recipient-name").val();
+        var content = $("#message-text").val();
+
+        // 发送异步请求 (AJAX)
+        $.post(
+            "/discuss/add", // 后端接口路径
+            {"title": title, "content": content}, // 发送的数据
+            function(data) {
+                // 将服务器返回的 JSON 字符串解析为对象
+                data = $.parseJSON(data);
+
+                // 弹窗提示结果
+                alert(data.msg);
+
+                // 如果发布成功，刷新页面看到新帖子
+                if(data.code == 0) {
+                    window.location.reload();
+                }
+            }
+        );
+    }
+</script>
+</body> <!-- 注意：这是 body 的结束标签 -->
 </html>
+

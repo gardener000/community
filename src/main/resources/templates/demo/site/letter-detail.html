@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>私信详情 - 牛客社区</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <style>
+        .container { width: 800px; margin: 20px auto; }
+        .back-btn { float: right; padding: 5px 10px; cursor: pointer; }
+        .letter-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; }
+        .user-header { width: 45px; height: 45px; border-radius: 50%; margin-right: 15px; }
+        .content-box { flex: 1; }
+        .user-name { font-weight: bold; margin-bottom: 5px; display: block; }
+        .text-content { background: #f8f9fa; padding: 10px; border-radius: 5px; color: #333; }
+        .time { font-size: 12px; color: #999; margin-top: 5px; display: block; }
+    </style>
+</head>
+<body>
+<div th:replace="~{demo/index::navbar}"></div>
+
+<div class="container">
+    <div>
+        正在与 <b th:text="${target.username}" style="color: #007bff;">对方昵称</b> 对话
+        <button class="back-btn" onclick="location.href='/letter/list'">返回列表</button>
+    </div>
+    <hr>
+
+    <!-- 私信内容 -->
+    <div class="letter-list">
+        <div class="letter-item" th:each="map : ${letters}">
+            <img th:src="${map.fromUser.headerUrl}" class="user-header">
+            <div class="content-box">
+                <span class="user-name" th:text="${map.fromUser.username}">发信人</span>
+                <div class="text-content" th:utext="${map.letter.content}">
+                    聊天内容...
+                </div>
+                <span class="time" th:text="${#dates.format(map.letter.createTime, 'yyyy-MM-dd HH:mm:ss')}">时间</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    <div th:replace="~{demo/index::pagination}"></div>
+</div>
+</body>
+</html>

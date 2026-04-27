@@ -6,6 +6,7 @@ public class DiscussPost {
     private int id;
     private String userId;
     private String title;
+    private int commentCount; // 评论数量
 
     public int getId() {
         return id;
@@ -45,6 +46,13 @@ public class DiscussPost {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     private String content;

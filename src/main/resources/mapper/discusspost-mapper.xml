@@ -12,4 +12,17 @@
     <select id="selectDiscussPostRows" resultType="int">
         select count(id) from discuss_post
     </select>
+
+    <insert id="insertDiscussPost" parameterType="DiscussPost" keyProperty="id">
+        insert into discuss_post (user_id, title, content, create_time)
+        values(#{userId}, #{title}, #{content}, #{createTime})
+    </insert>
+
+    <select id="selectDiscussPostById" resultType="com.example.demo.entity.DiscussPost">
+        select id, user_id, title, content, create_time, comment_count  <!-- 加上这个字段 -->
+        from discuss_post where id = #{id}
+    </select>
+    <update id="updateCommentCount">
+        update discuss_post set comment_count = #{commentCount} where id = #{id}
+    </update>
 </mapper>

@@ -2,6 +2,7 @@ package com.example.demo.controller.interceptor;
 
 import com.example.demo.entity.LoginTicket;
 import com.example.demo.entity.User;
+import com.example.demo.service.MessageService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.CookieUtil; // 稍后我们补一个读取Cookie的工具类
 import com.example.demo.util.HostHolder;
@@ -22,6 +23,10 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private MessageService messageService;
+
 
     // 1. 请求开始前：查出用户并存入 HostHolder
     @Override
@@ -49,6 +54,9 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
         User user = hostHolder.getUser();
         if (user != null && modelAndView != null) {
             modelAndView.addObject("loginUser", user);
+            // 新增：查询当前用户的未读消息总数并存入 model
+            int allUnreadCount = messageService.findLetterUnreadCount(user.getId(), null);
+            modelAndView.addObject("allUnreadCount", allUnreadCount);
         }
     }
 

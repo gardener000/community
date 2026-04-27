@@ -10,4 +10,9 @@ public interface DiscussPostMapper {
     List<DiscussPost> selectDiscussPosts(int offset, int limit);
     // 查询帖子总数
     int selectDiscussPostRows();
+    int insertDiscussPost(DiscussPost discussPost);
+    // 根据 ID 查询帖子详情
+    DiscussPost selectDiscussPostById(int id);
+    // 更新帖子的评论数量
+    int updateCommentCount(int id, int commentCount);
 }

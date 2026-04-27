@@ -179,4 +179,7 @@ public class UserService {
     public int updateHeader(int id, String headerUrl) {
         return userMapper.updateHeader(id, headerUrl);
     }
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
+    }
 }

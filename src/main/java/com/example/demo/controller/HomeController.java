@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.DiscussPost;
 import com.example.demo.entity.Page;
-import com.example.demo.DiscussPostService;
+import com.example.demo.service.DiscussPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class HomeController {
@@ -35,5 +36,9 @@ public class HomeController {
         // 注意：Spring MVC 会自动把 Page 对象也存入 model，名字默认叫 "page"
 
         return "demo/index";
+    }
+    @RequestMapping(path = "/errorpage", method = RequestMethod.GET)
+    public String getErrorPage() {
+        return "demo/error/500";
     }
 }

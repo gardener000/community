@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.CommentMapper">
+
+    <!-- 定义通用的查询字段 -->
+    <sql id="selectFields">
+        id, user_id, entity_type, entity_id, target_id, content, status, create_time
+    </sql>
+
+    <!-- 1. 根据实体查询一页评论数据 (PPT 第 15 页要求) -->
+    <select id="selectCommentsByEntity" resultType="com.example.demo.entity.Comment">
+        select <include refid="selectFields"></include>
+        from comment
+        where status = 0
+        and entity_type = #{entityType}
+        and entity_id = #{entityId}
+        order by create_time asc
+        limit #{offset}, #{limit}
+    </select>
+
+    <!-- 2. 根据实体查询评论的总数量 (用于分页) -->
+    <select id="selectCountByEntity" resultType="int">
+        select count(id)
+        from comment
+        where status = 0
+        and entity_type = #{entityType}
+        and entity_id = #{entityId}
+    </select>
+
+    <!-- 3. 增加评论 (为下一节“添加评论”做准备) -->
+    <insert id="insertComment" parameterType="com.example.demo.entity.Comment" keyProperty="id">
+        insert into comment(user_id, entity_type, entity_id, target_id, content, status, create_time)
+        values(#{userId}, #{entityType}, #{entityId}, #{targetId}, #{content}, #{status}, #{createTime})
+    </insert>
+
+</mapper>

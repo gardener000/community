@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>私信列表 - 牛客社区</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <style>
+        .container { width: 800px; margin: 20px auto; font-family: Arial, sans-serif; }
+        .letter-item { border-bottom: 1px solid #eee; padding: 15px; display: flex; align-items: center; position: relative; }
+        .user-header { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; }
+        .letter-content { flex: 1; }
+        .letter-content b { font-size: 16px; color: #333; }
+        .letter-content p { color: #666; margin: 5px 0; font-size: 14px; }
+        .letter-time { font-size: 12px; color: #999; }
+        .badge { background: red; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; position: absolute; right: 20px; top: 15px; }
+        .letter-count { font-size: 12px; color: #007bff; margin-top: 5px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #343a40; padding-bottom: 10px; }
+        .btn-send { background: #007bff; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+
+        /* 弹窗样式 */
+        #sendModal { display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; border: 1px solid #ccc; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 100; }
+    </style>
+</head>
+<body>
+<!-- 1. 引用导航栏 -->
+<div th:replace="~{demo/index::navbar}"></div>
+
+<div class="container">
+    <!-- 2. 顶部工具栏 -->
+    <div class="top-bar">
+            <span>
+                朋友私信 (共 <i th:text="${letterUnreadCount}">0</i> 条未读)
+            </span>
+        <button type="button" class="btn-send" onclick="openModal()">发私信</button>
+    </div>
+
+    <!-- 3. 私信列表循环 -->
+    <div class="letter-list">
+        <div class="letter-item" th:each="map : ${conversations}">
+            <!-- 未读标记 -->
+            <span class="badge" th:if="${map.unreadCount > 0}" th:text="${map.unreadCount}">1</span>
+
+            <img th:if="${map.target != null}"  th:src="${map.target.headerUrl}" class="user-header">
+
+            <div class="letter-content">
+                <div>
+                    <b th:text="${map.target.username}">落基山脉</b>
+                    <span class="letter-time" style="float: right" th:text="${#dates.format(map.conversation.createTime, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01</span>
+                </div>
+                <div>
+                    <!-- 点击内容跳转到私信详情页 -->
+                    <a th:href="@{|/letter/detail/${map.conversation.conversationId}|}" style="text-decoration: none;">
+                        <p th:text="${map.conversation.content}">你好，看到你发的贴子了，很有趣！</p>
+                    </a>
+                    <div class="letter-count">
+                        共 <i th:text="${map.letterCount}">5</i> 条对话
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 分页组件 (复用你之前的逻辑) -->
+    <div th:replace="~{demo/index::pagination}"></div>
+</div>
+
+<!-- 5. 发送私信的弹窗 (隐藏状态，为下一步做准备) -->
+<div id="sendModal">
+    <h3>发送私信</h3>
+    <hr>
+    <p>发给：<input type="text" id="targetName" placeholder="输入对方昵称" style="width:100%"></p>
+    <p>内容：<textarea id="content" rows="5" style="width:100%"></textarea></p>
+    <hr>
+    <div style="text-align: right">
+        <button onclick="closeModal()">取消</button>
+        <button style="background: #007bff; color: white; border: none; padding: 5px 10px;" onclick="sendLetter()">发送</button>
+    </div>
+</div>
+
+<!-- 脚本部分 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function openModal() {
+        $("#sendModal").show();
+    }
+    function closeModal() {
+        $("#sendModal").hide();
+    }
+
+    function sendLetter() {
+    // 增加一行 log，帮我们在控制台看到函数是否运行
+    console.log("准备发送私信...");
+
+    var targetName = $("#targetName").val();
+    var content = $("#content").val();
+
+    // 发送 AJAX 请求
+    $.post(
+        "/letter/send",
+        {"toName": targetName, "content": content},
+        function(data) {
+            console.log("服务器返回了数据: " + data);
+            data = $.parseJSON(data);
+            if(data.code == 0) {
+                alert("发送成功！");
+                window.location.reload();
+            } else {
+                alert(data.msg);
+            }
+        }
+    );
+    closeModal();
+}
+</script>
+</body>
+</html>
